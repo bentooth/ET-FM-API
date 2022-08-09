@@ -1,6 +1,5 @@
 import * as express from 'express';
 import SoundCloudService from './soundcloud-client';
-const { Readable } = require('stream');
 
 const HTTP_PORT = 4000;
 const app = express();
