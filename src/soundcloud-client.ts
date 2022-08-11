@@ -1,15 +1,21 @@
 import 'dotenv/config'
 import axios, { AxiosResponse } from "axios";
 import { Request, Response, NextFunction } from "express";
-import NodeCache = require("node-cache");
+import * as  NodeCache from 'node-cache';
 import * as qs from 'qs';
 import { Playlist as SCPlaylist, Track } from "./soundcloud-model";
 
-var cache = new NodeCache();
+const cache = new NodeCache();
 
 export class SoundCloudService implements ISoundCloudService {
     constructor() {
-        this.getTokens();
+        this.getTokens()
+            .then(() => {
+                console.log('SoundCloudService is ready');
+            }).catch(error => {
+                console.log(error); error
+                throw new Error('Unable to get access tokens');
+            });
     }
 
     private setExpiryDate = (expiresIn: number): string => {
@@ -76,7 +82,7 @@ export class SoundCloudService implements ISoundCloudService {
 
     public getPlaylist = async (_req: Request, res: Response, _next: NextFunction): Promise<Response<ETPlaylist[]>> => {
 
-        let cache_playlist: ETPlaylist[] | undefined = cache.get('playlist');
+        const cache_playlist: ETPlaylist[] | undefined = cache.get('playlist');
 
         if (cache_playlist) {
             res.status(200);
@@ -102,7 +108,7 @@ export class SoundCloudService implements ISoundCloudService {
         const playlist: SCPlaylist = response.data;
         const tracks: Track[] = playlist.tracks;
 
-        const ETPlaylist = tracks.map((track: Track, _) => {
+        const ETPlaylist = tracks.map((track: Track) => {
             return {
                 id: track.id,
                 title: track.title,
@@ -114,12 +120,12 @@ export class SoundCloudService implements ISoundCloudService {
         cache.set('playlist', ETPlaylist, 864000);
 
         res.status(200);
-        return res.json(ETPlaylist);;
+        return res.json(ETPlaylist);
     }
 
     public getStream = async (req: Request, res: Response, _next: NextFunction): Promise<Response<AxiosResponse>> => {
 
-        let trackId = req.params.id;;
+        const trackId = req.params.id;
         let response: AxiosResponse;
 
         try {
@@ -165,8 +171,8 @@ interface ETPlaylist {
 }
 
 export interface ISoundCloudService {
-    getPlaylist(req: Request, res: Response, next: NextFunction): Promise<Response<ETPlaylist[]>>
-    getStream(req: Request, res: Response, next: NextFunction): Promise<Response<AxiosResponse>>
+    getPlaylist(req: Request, res: Response, _next: NextFunction): Promise<Response<ETPlaylist[]>>
+    getStream(req: Request, res: Response, _next: NextFunction): Promise<Response<AxiosResponse>>
     checkTokens(req: Request, res: Response, next: NextFunction): Promise<void>
 }
 

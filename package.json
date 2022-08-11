@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/tsc && cp package.json ./lib/package.json",
-    "dev:start": "node lib/index.js"
+    "dev:start": "node lib/index.js",
+    "lint": "eslint \"src/**/*.ts\" --fix"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "author": "Backend for beginners",
   "license": "ISC",
@@ -20,6 +24,11 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
-    "@types/node": "^16.4.13"
+    "@types/node": "^16.4.13",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4"
   }
 }

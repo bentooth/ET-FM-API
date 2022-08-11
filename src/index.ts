@@ -17,7 +17,7 @@ function startServer() {
 
   app.listen(HTTP_PORT, () => { console.log(`Express is listening at http://localhost:${HTTP_PORT}`); });
 
-};
+}
 
 (() => {
   try {
