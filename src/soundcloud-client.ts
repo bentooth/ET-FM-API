@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import axios, { AxiosResponse } from "axios";
 import { Request, Response, NextFunction } from "express";
-import * as  NodeCache from 'node-cache';
+import NodeCache from 'node-cache';
 import * as qs from 'qs';
 import { Playlist as SCPlaylist, Track } from "./soundcloud-model";
 
@@ -108,9 +108,10 @@ export class SoundCloudService implements ISoundCloudService {
         const playlist: SCPlaylist = response.data;
         const tracks: Track[] = playlist.tracks;
 
-        const ETPlaylist = tracks.map((track: Track) => {
+        const ETPlaylist: ETPlaylist[] = tracks.map((track: Track, i: number) => {
             return {
-                id: track.id,
+                id: i,
+                stream_id: track.id,
                 title: track.title,
                 cover: track.artwork_url.replace('large', 't500x500'),
                 duration: track.duration,
@@ -165,6 +166,7 @@ interface GetTokenResponse {
 
 interface ETPlaylist {
     id: number,
+    stream_id: number,
     title: string;
     cover: string;
     duration: number;

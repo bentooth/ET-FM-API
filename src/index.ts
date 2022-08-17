@@ -1,4 +1,5 @@
-import * as express from 'express';
+import express from 'express';
+import cors from 'cors';
 import SoundCloudService from './soundcloud-client';
 
 const HTTP_PORT = 4000;
@@ -7,8 +8,22 @@ function startServer() {
 
   const app = express();
 
-  const soundcloud = new SoundCloudService();
+  const allowedOrigins = ['http://localhost:4000'];
 
+  const options: cors.CorsOptions = {
+    origin: allowedOrigins
+  };
+
+  app.use(cors(options));
+
+
+  app.use((_req, res, next) => {
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Headers', "*");
+    next();
+  });
+
+  const soundcloud = new SoundCloudService();
   app.use(soundcloud.checkTokens);
 
   app.get('/playlist', soundcloud.getPlaylist);
