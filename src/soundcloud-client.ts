@@ -144,6 +144,7 @@ export class SoundCloudService implements ISoundCloudService {
             throw new Error(`Unable to get stream ${trackId} from SoundCloud`);
         }
 
+        res.status(206).set({ 'Content-Type': 'audio/mpeg' });
         return response.data.pipe(res);
     }
 

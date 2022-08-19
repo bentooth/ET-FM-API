@@ -8,7 +8,7 @@ function startServer() {
 
   const app = express();
 
-  const allowedOrigins = ['http://localhost:4000'];
+  const allowedOrigins = ['http://localhost:4000', 'https://electrictooth.com'];
 
   const options: cors.CorsOptions = {
     origin: allowedOrigins
