@@ -26,9 +26,9 @@ function startServer() {
   const soundcloud = new SoundCloudService();
   app.use(soundcloud.checkTokens);
 
-  app.get('/playlist', soundcloud.getPlaylist);
+  app.get('/fm/playlist', soundcloud.getPlaylist);
 
-  app.get('/stream/:id', soundcloud.getStream);
+  app.get('/fm/stream/:id', soundcloud.getStream);
 
   app.listen(HTTP_PORT, () => { console.log(`Express is listening at http://localhost:${HTTP_PORT}`); });
 
