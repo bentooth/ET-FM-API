@@ -4,7 +4,6 @@ import { Request, Response, NextFunction } from "express";
 import NodeCache from 'node-cache';
 import * as qs from 'qs';
 import { Playlist as SCPlaylist, Track } from "./soundcloud-model";
-
 const cache = new NodeCache();
 
 export class SoundCloudService implements ISoundCloudService {
@@ -49,6 +48,7 @@ export class SoundCloudService implements ISoundCloudService {
             process.env.EXPIRES_IN = this.setExpiryDate(data.expires_in)
         } catch (error) {
             throw new Error('Unable to get access tokens');
+
         }
     }
 
@@ -101,8 +101,9 @@ export class SoundCloudService implements ISoundCloudService {
                     'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`
                 }
             });
-        } catch (error) {
-            throw new Error('Unable to fetch playlist from SoundCloud');
+        } catch (error: any) {
+            console.log(`Unable to fetch playlist from SoundCloud`);
+            return res.status(error.response.status).json({ 'status': error.response.status, 'message': error.response.statusText });
         }
 
         const playlist: SCPlaylist = response.data;
@@ -140,8 +141,9 @@ export class SoundCloudService implements ISoundCloudService {
                     'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`
                 }
             });
-        } catch (error) {
-            throw new Error(`Unable to get stream ${trackId} from SoundCloud`);
+        } catch (error: any) {
+            console.log(`Unable to get stream ${trackId} from SoundCloud`);
+            return res.status(error.response.status).json({ 'status': error.response.status, 'message': error.response.statusText });
         }
 
         res.status(206).set({ 'Content-Type': 'audio/mpeg' });
