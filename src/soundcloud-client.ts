@@ -152,7 +152,7 @@ export class SoundCloudService implements ISoundCloudService {
 
     public checkTokens = async (_req: Request, _res: Response, next: NextFunction): Promise<void> => {
         const now = new Date().toISOString();
-        if (process.env?.expires_in && now > process.env.expires_in) {
+        if (process.env?.EXPIRES_IN && now > process.env.EXPIRES_IN) {
             await this.refreshTokens();
         }
         next();
