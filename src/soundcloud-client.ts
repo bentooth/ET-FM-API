@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import NodeCache from 'node-cache';
 import * as qs from 'qs';
 import { Playlist as SCPlaylist, Track } from "./soundcloud-model";
-const cache = new NodeCache();
+const cache = new NodeCache({ stdTTL: 60 * 60, checkperiod: 120 });
 
 export class SoundCloudService implements ISoundCloudService {
     constructor() {
@@ -80,9 +80,17 @@ export class SoundCloudService implements ISoundCloudService {
         }
     }
 
+    private setCache = (key: string, value: any) => {
+        cache.set(key, value);
+    };
+
+    private getCache = (key: string): any => {
+        return cache.get(key);
+    };
+
     public getPlaylist = async (_req: Request, res: Response, _next: NextFunction): Promise<Response<ETPlaylist[]>> => {
 
-        const cache_playlist: ETPlaylist[] | undefined = cache.get('playlist');
+        const cache_playlist: ETPlaylist[] | undefined = this.getCache('playlist');
 
         if (cache_playlist) {
             res.status(200);
@@ -119,7 +127,7 @@ export class SoundCloudService implements ISoundCloudService {
             }
         })
 
-        cache.set('playlist', ETPlaylist, 864000);
+        this.setCache('playlist', ETPlaylist);
 
         res.status(200);
         return res.json(ETPlaylist);
